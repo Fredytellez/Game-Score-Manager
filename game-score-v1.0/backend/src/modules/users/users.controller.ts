@@ -1,35 +1,63 @@
-import { Controller, Get, Param, Put, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Body,
+  Param,
+  Delete,
+  Put,
+  UseGuards,
+  Patch,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UpdateUserDto } from '../auth/dto/update.user.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  /* @Get()
-  getAllUsers(): User[] {
-    return this.usersService.getAllUsers();
-  } */
-
   @UseGuards(JwtAuthGuard)
   @Get('profile/:id')
   async getProfile(@Param('id') id: string) {
-    return this.usersService.getProfile(id);
+    return this.usersService.findOne(id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('scores/:id')
   async getScores(@Param('id') id: string) {
-    return this.usersService.getScores(id);
+    const user = await this.usersService.findOne(id);
+    return user.scores;
   }
 
   @UseGuards(JwtAuthGuard)
   @Put('profile/:id')
-  async updateProfile(
-    @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto,
-  ) {
-    return this.usersService.updateProfile(id, updateUserDto);
+  async updateProfile(@Param('id') id: string, @Body() updateUserDto: any) {
+    await this.usersService.update(id, updateUserDto);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('admin')
+  async getAllUsers() {
+    return this.usersService.findAll();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('admin/:userId')
+  async enableOrDisableUser(
+    @Param('userId') userId: string,
+    @Body() updateUserDto: any,
+  ) {
+    await this.usersService.update(userId, updateUserDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('admin/:userId')
+  async deleteUser(@Param('userId') userId: string) {
+    await this.usersService.remove(userId);
+  }
+
+  /* @UseGuards(JwtAuthGuard)
+  @Delete('admin/scores/:userId')
+  async deleteScore(@Param('userId') userId: string) {
+    // Implementar lógica para eliminar una puntuación específica
+  } */
 }

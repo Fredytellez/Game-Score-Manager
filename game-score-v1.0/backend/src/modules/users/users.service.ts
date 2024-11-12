@@ -1,59 +1,39 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
-import * as bcrypt from 'bcrypt';
-import { v4 as uuidv4 } from 'uuid';
-import { createUserDto } from '../auth/dto/crate.user.dto';
-import { UpdateUserDto } from '../auth/dto/update.user.dto';
 
 @Injectable()
 export class UsersService {
-  private users: User[] = [];
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+  ) {}
 
-  async create(createUserDto: createUserDto): Promise<User> {
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-    const hashedConfirmPassword = await bcrypt.hash(
-      createUserDto.confirmPassword,
-      10,
-    );
-    const newUser = {
-      id: uuidv4(),
-      ...createUserDto,
-      password: hashedPassword,
-      confirmPassword: hashedConfirmPassword,
-    };
-    this.users.push(newUser);
-    return newUser;
-  }
-
-  getAllUsers(): User[] {
-    return this.users;
-  }
-
-  async findByEmail(email: string): Promise<User | undefined> {
-    return this.users.find((user) => user.email === email);
-  }
   async findByUsername(username: string): Promise<User | undefined> {
-    return this.users.find((user) => user.username === username);
+    return this.usersRepository.findOne({ where: { username } });
+  }
+  async findByEmail(email: string): Promise<User | undefined> {
+    return this.usersRepository.findOne({ where: { email } });
   }
 
-  async getProfile(id: string): Promise<User | undefined> {
-    return this.users.find((user) => user.id === id);
+  async findOne(id: string): Promise<User> {
+    return this.usersRepository.findOne({ where: { id } });
   }
 
-  async getScores(id: string): Promise<any[]> {
-    // implementar la logica para traer las puntuaciones
-    return [id];
+  async findAll(): Promise<User[]> {
+    return this.usersRepository.find();
   }
 
-  async updateProfile(
-    id: string,
-    updateUserDto: UpdateUserDto,
-  ): Promise<User | undefined> {
-    const user = this.users.find((user) => user.id === id);
-    if (user) {
-      Object.assign(user, updateUserDto);
-      return user;
-    }
-    return undefined;
+  async create(user: any): Promise<User> {
+    return this.usersRepository.save(user);
+  }
+
+  async update(id: string, updateUserDto: any): Promise<void> {
+    await this.usersRepository.update(id, updateUserDto);
+  }
+
+  async remove(id: string): Promise<void> {
+    await this.usersRepository.delete(id);
   }
 }
