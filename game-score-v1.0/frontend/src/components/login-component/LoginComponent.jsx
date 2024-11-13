@@ -58,13 +58,13 @@ const LoginComponent = () => {
   };
   return (
     <Container
-      className="bg-white border rounded d-flex justify-content-center align-items-center mt-5"
-      style={{ height: "80vh", width: "80vh" }}
+    className="bg-white border rounded d-flex justify-content-center align-items-center mt-5"
+    style={{ height: "80vh", width: "80vh" }}
     >
       <Row>
         <Col>
           <Form
-            style={{ height: "60vh", width: "60vh" }}
+            style={{ height: "70vh", width: "70vh" }}
             onSubmit={handleSubmit}
           >
             <h1 className="text-center">Login</h1>

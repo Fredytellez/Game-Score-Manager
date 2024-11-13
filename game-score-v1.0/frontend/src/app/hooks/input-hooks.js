@@ -9,7 +9,7 @@ export const useInputHook = (initialValue = "") => {
     reset: () => setValue(""),
     bind: {
       onChange: (e) => {
-        console.log("value: ", e.target.value)
+        /* console.log("value: ", e.target.value) */
         setValue(e.target.value);
       },
     },

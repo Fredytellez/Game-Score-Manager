@@ -10,13 +10,13 @@ import { Score } from './modules/scores/entities/score.entity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST || 'db', // 'db' es el nombre del servicio del contenedor de PostgreSQL
+      host: process.env.DB_HOST || 'db', // db es el nombre del servicio del contenedor de PostgreSQL
       port: Number(process.env.DB_PORT) || 5432, // El puerto dentro del contenedor de PostgreSQL (5432)
       username: process.env.DB_USERNAME || 'myuser',
       password: process.env.DB_PASSWORD || 'mypassword',
       database: process.env.DB_NAME || 'mydb',
-      entities: [User, Score], // Asegúrate de incluir tus entidades aquí
-      synchronize: true, // Solo en desarrollo. Desactívalo en producción.
+      entities: [User, Score],
+      synchronize: true,
     }),
     TypeOrmModule.forFeature([User, Score]),
     AuthModule,

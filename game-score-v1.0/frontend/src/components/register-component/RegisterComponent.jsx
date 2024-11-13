@@ -85,15 +85,12 @@ const RegisterComponent = () => {
   return (
     <Container
       className="bg-white border rounded d-flex justify-content-center align-items-center mt-5"
-      style={{ height: "90vh", width: "80vh" }}
+      style={{ height: "90vh", width: "90vh" }}
     >
       <Row>
-        <Col>
-          <h1 className="text-center pb-5">Create an account</h1>
-          <Form
-            style={{ height: "60vh", width: "60vh" }}
-            onSubmit={handleSubmit}
-          >
+        <Col >
+          <h1 className="text-center pt-3">Create an account</h1>
+          <Form onSubmit={handleSubmit} className="responsive-form">
             <Form.Group className="mb-3" controlId="formGroupUsername">
               <Form.Label>User Name</Form.Label>
               <Form.Control
@@ -142,15 +139,10 @@ const RegisterComponent = () => {
                 {errors.confirmPassword}
               </Form.Control.Feedback>
             </Form.Group>
-            <Button
-              variant="primary"
-              type="submit"
-              style={{ width: "100%" }}
-              className="mb-3"
-            >
+            <Button variant="primary" type="submit" className="w-100 mb-3">
               Register
-            </Button>{" "}
-            <Container className="text-center mb-5">
+            </Button>
+            <Container className="text-center mb-3">
               <Button variant="danger" className="me-2">
                 <i className="fab fa-google"></i> Register with Google
               </Button>
@@ -160,9 +152,9 @@ const RegisterComponent = () => {
             </Container>
             <Container className="text-center">
               <p>
-                Already have an account?{""}
+                Already have an account?
                 <Button variant="link" onClick={handleLoginButton}>
-                  <span>Log in.</span>
+                  Log in.
                 </Button>
               </p>
             </Container>
