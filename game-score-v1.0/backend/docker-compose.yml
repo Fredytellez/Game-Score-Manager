@@ -1,17 +1,15 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:latest
     container_name: postgres_db
     environment:
-      POSTGRES_USER: myuser       # Usuario de la base de datos
-      POSTGRES_PASSWORD: mypassword  # Contraseña de la base de datos
-      POSTGRES_DB: mydb           # Nombre de la base de datos
+      POSTGRES_USER: myuser # Usuario de la base de datos
+      POSTGRES_PASSWORD: mypassword # Contraseña de la base de datos
+      POSTGRES_DB: mydb # Nombre de la base de datos
     ports:
-      - "5433:5432"  # Puerto para conectarse a PostgreSQL
+      - '5433:5432' # Puerto para conectarse a PostgreSQL
     volumes:
-      - postgres_data:/var/lib/postgresql/data  # Persistencia de datos
+      - postgres_data:/var/lib/postgresql/data # Persistencia de datos
     networks:
       - backend
 
@@ -19,19 +17,19 @@ services:
     build: .
     container_name: nestjs_app
     depends_on:
-      - db  # Asegura que el contenedor de la base de datos esté disponible antes de iniciar la app
+      - db # Asegura que el contenedor de la base de datos esté disponible antes de iniciar la app
     environment:
-      DB_HOST: db  # Nombre del contenedor de la base de datos
+      DB_HOST: db # Nombre del contenedor de la base de datos
       DB_PORT: 5432
       DB_USERNAME: myuser
       DB_PASSWORD: mypassword
       DB_NAME: mydb
     ports:
-      - "4000:4000"  # Puerto para acceder a la aplicación NestJS
+      - '4000:4000' # Puerto para acceder a la aplicación NestJS
     networks:
       - backend
     command: npm run start:dev
-    
+
 volumes:
   postgres_data:
 
