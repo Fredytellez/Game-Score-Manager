@@ -62,10 +62,10 @@ const LoginForm = () => {
             </Form.Group >
             <Container className="ms-auto">
             <Button variant="primary" onClick={handleLogin}>
-              Register
+              Login
             </Button>{" "}
             <Button variant="primary" onClick={handleRegisterButton}>
-              Login
+              Register
             </Button>{" "}
             </Container>
           </Form>

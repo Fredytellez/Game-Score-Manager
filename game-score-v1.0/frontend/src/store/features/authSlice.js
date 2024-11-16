@@ -1,3 +1,4 @@
+import { current } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
 const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
