@@ -1,4 +1,4 @@
-// hooks/withAuth-hook.js
+/* // hooks/withAuth-hook.js
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -19,3 +19,4 @@ const withAuth = (WrappedComponent) => {
 };
 
 export default withAuth;
+ */

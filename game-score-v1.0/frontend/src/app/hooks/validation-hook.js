@@ -6,13 +6,13 @@ const useValidationHook = () => {
   const validate = (fields) => {
     const newErrors = {};
     if (fields.username && fields.username.length < 4) {
-      newErrors.username = 'Username must be at least 4 characters';
+      newErrors.username = 'El usuario debe contener mas de 4 caracteres';
     }
     if (fields.password && fields.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
+      newErrors.password = 'La contraseña debe tener mas de 8 caracteres';
     }
     if (fields.password && fields.confirmPassword && fields.password !== fields.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = 'Las contraseñas no coinciden';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;

@@ -1,38 +1,68 @@
+version: '3.8'
+
 services:
-  db:
-    image: postgres:latest
-    container_name: postgres_db
-    environment:
-      POSTGRES_USER: myuser # Usuario de la base de datos
-      POSTGRES_PASSWORD: mypassword # Contraseña de la base de datos
-      POSTGRES_DB: mydb # Nombre de la base de datos
+  # Servicio de la aplicacion NestJS
+  api:
+    build:
+      context: .
+      dockerfile: dockerfile
+    container_name: nest-api
     ports:
-      - '5433:5432' # Puerto para conectarse a PostgreSQL
-    volumes:
-      - postgres_data:/var/lib/postgresql/data # Persistencia de datos
-    networks:
-      - backend
-
-  app:
-    build: .
-    container_name: nestjs_app
+      - '${PORT}:${PORT}'
     depends_on:
-      - db # Asegura que el contenedor de la base de datos esté disponible antes de iniciar la app
+      - mongodb
+      - postgres
     environment:
-      DB_HOST: db # Nombre del contenedor de la base de datos
-      DB_PORT: 5432
-      DB_USERNAME: myuser
-      DB_PASSWORD: mypassword
-      DB_NAME: mydb
-    ports:
-      - '4000:4000' # Puerto para acceder a la aplicación NestJS
+      - NODE_ENV=${NODE_ENV}
+      - PORT=${PORT}
+      - MONGO_URI=${MONGO_URI}
+      - DATABASE_URL=${DATABASE_URL}
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
     networks:
-      - backend
-    command: npm run start:dev
+      - backend-network
+    restart: unless-stopped
 
+  # Servicio de MongoDB
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGODB_DATABASE}
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - backend-network
+    restart: unless-stopped
+
+  # Servicio de PostgreSQL
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend-network
+    restart: unless-stopped
+
+    # Definición de volúmenes
 volumes:
+  mongodb_data:
   postgres_data:
 
+# Definición de redes
 networks:
-  backend:
+  backend-network:
     driver: bridge

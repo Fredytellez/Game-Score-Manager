@@ -1,27 +1,36 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './modules/auth/auth.module';
-import { UsersModule } from './modules/users/users.module';
-import { ScoresModule } from './modules/scores/scores.module';
-import { User } from './modules/users/entities/user.entity';
-import { Score } from './modules/scores/entities/score.entity';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { AuthModule } from './module/auth/auth.module';
+import { ScoresModule } from './module/scores/scores.module';
+import { UsersModule } from './module/users/users.module';
+import { JwtModule } from '@nestjs/jwt';
+import { MulterModule } from '@nestjs/platform-express';
+import { multerConfig } from './module/users/config/multer.config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from '@nestjs/config';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DB_HOST || 'db', // db es el nombre del servicio del contenedor de PostgreSQL
-      port: Number(process.env.DB_PORT) || 5432, // El puerto dentro del contenedor de PostgreSQL (5432)
-      username: process.env.DB_USERNAME || 'myuser',
-      password: process.env.DB_PASSWORD || 'mypassword',
-      database: process.env.DB_NAME || 'mydb',
-      entities: [User, Score],
-      synchronize: true,
-    }),
-    TypeOrmModule.forFeature([User, Score]),
     AuthModule,
     UsersModule,
     ScoresModule,
+    JwtModule.register({
+      secret: 'your-secret-key', // En producción, usar variables de entorno
+      signOptions: { expiresIn: '1h' },
+    }),
+    MulterModule.register(multerConfig),
+    // Configuración de variables de entorno
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    // Conexión con MongoDB
+    MongooseModule.forRoot(process.env.MONGODB_URI),
+    // Módulo de Prisma
+    PrismaModule,
   ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
